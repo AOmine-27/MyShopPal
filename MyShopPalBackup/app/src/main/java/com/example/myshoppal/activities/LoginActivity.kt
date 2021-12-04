@@ -74,7 +74,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             }
 
             else -> {
-//                showErrorSnackBar("Your details are valid", false)
+                showErrorSnackBar("Your details are valid", false)
                 true
             }
         }

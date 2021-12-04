@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.view.WindowInsets
@@ -132,8 +133,17 @@ class RegisterActivity : BaseActivity() {
                             false
                         )
 
-                        FirebaseAuth.getInstance().signOut()
-                        finish()
+                        @Suppress("DEPRECATION")
+                        Handler().postDelayed(
+                            {
+                                //Launch Main Activity
+                                FirebaseAuth.getInstance().signOut()
+                                finish()
+                            }, 2500
+
+                        )
+
+
 
                     } else {
                         //If the registering is not successful then show error message
