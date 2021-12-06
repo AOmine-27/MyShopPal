@@ -1,24 +1,19 @@
 package com.example.myshoppal.activities
 
-import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import com.example.myshoppal.R
+import com.example.myshoppal.firestore.FirestoreClass
+import com.example.myshoppal.models.User
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import org.w3c.dom.Text
 
 class RegisterActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,9 +113,7 @@ class RegisterActivity : BaseActivity() {
 
             //create an instance and create a register a user with email and password
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(
-                OnCompleteListener <AuthResult> { task ->
-
-                    hideProgressDialog()
+                OnCompleteListener{ task ->
 
                     //if the registration is successfully done
                     if (task.isSuccessful) {
@@ -128,10 +121,14 @@ class RegisterActivity : BaseActivity() {
                         //Firebase registered user
                         val firebaseUser: FirebaseUser = task.result!!.user!!
 
-                        showErrorSnackBar(
-                            "You are registered successfully. Your user is is ${firebaseUser.uid}",
-                            false
+                        val user = User(
+                            firebaseUser.uid,
+                            findViewById<EditText>(R.id.et_first_name).text.toString().trim { it <= ' '},
+                            findViewById<EditText>(R.id.et_lat_name).text.toString().trim { it <= ' '},
+                            email
                         )
+
+                        FirestoreClass().registerUser(this,user)
 
                         @Suppress("DEPRECATION")
                         Handler().postDelayed(
@@ -142,10 +139,8 @@ class RegisterActivity : BaseActivity() {
                             }, 2500
 
                         )
-
-
-
                     } else {
+                        hideProgressDialog()
                         //If the registering is not successful then show error message
                         showErrorSnackBar( task.exception!!.message.toString(), true)
                     }
@@ -154,4 +149,16 @@ class RegisterActivity : BaseActivity() {
 
         }
     }
+
+    fun userRegistrationSuccess() {
+        //hide the progress dialog
+        hideProgressDialog()
+
+        Toast.makeText(
+            this,
+            resources.getString(R.string.register_success),
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
 }

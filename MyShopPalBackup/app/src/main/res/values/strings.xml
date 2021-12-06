@@ -36,6 +36,7 @@
     <string name="title_forgot_password">FORGOT PASSWORD?</string>
     <string name="forgot_password_title_description">Enter your username and email address we\'ll send you an email to reset your password</string>
     <string name="btn_lbl_submit">Submit</string>
+    <string name="register_success">User registered</string>
 
 
 </resources>
