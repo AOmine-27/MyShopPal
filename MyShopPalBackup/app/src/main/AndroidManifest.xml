@@ -10,10 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyShopPal">
         <activity
+            android:name=".activities.UserProfileActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:theme="@style/Theme.MyShopPal.NoActionBar"/>
+        <activity
             android:name=".activities.ForgotPasswordActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyShopPal.NoActionBar"/>
+            android:theme="@style/Theme.MyShopPal.NoActionBar" />
         <activity
             android:name=".activities.BaseActivity"
             android:exported="true" />

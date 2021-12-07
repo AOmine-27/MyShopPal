@@ -1,6 +1,8 @@
 package com.example.myshoppal.firestore
 
 import android.app.Activity
+import android.content.Context
+import android.content.SharedPreferences
 import android.media.session.MediaSessionManager
 import android.util.Log
 import com.example.myshoppal.activities.LoginActivity
@@ -53,6 +55,21 @@ class FirestoreClass {
             .addOnSuccessListener{ document ->
                 Log.i(activity.javaClass.simpleName, document.toString())
                 val user = document.toObject(User::class.java)!!
+                val sharedPreferences =
+                    activity.getSharedPreferences(
+                        Constants.MYSHOPPAL_PREFERENCES,
+                        Context.MODE_PRIVATE
+                    )
+
+
+                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                //Key: logged_in_username
+                //value: firstname lastName
+                editor.putString(
+                    Constants.LOGGED_IN_USERNAME,
+                    "${user.firstName} ${user.lastName}"
+                )
+                editor.apply()
 
                 when (activity) {
                     is LoginActivity -> {
