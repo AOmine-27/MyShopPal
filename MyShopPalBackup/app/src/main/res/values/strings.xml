@@ -44,4 +44,6 @@
     <string name="rb_lbl_female">FEMALE</string>
     <string name="btn_lbl_save">Save</string>
 
+    <string name="read_storage_permission_denied">The permission for storage access was denied. You can configure in your options menu</string>
+    <string name="image_selection_failed">Image selection failed</string>
 </resources>

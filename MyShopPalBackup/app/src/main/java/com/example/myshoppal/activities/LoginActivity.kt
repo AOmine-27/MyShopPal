@@ -14,6 +14,7 @@ import android.widget.TextView
 import com.example.myshoppal.R
 import com.example.myshoppal.firestore.FirestoreClass
 import com.example.myshoppal.models.User
+import com.example.myshoppal.utils.Constants
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 
@@ -117,7 +118,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         Log.i("Email", user.email)
 
         if (user.profileCompleted == 0){
-            startActivity(Intent(this@LoginActivity, UserProfileActivity::class.java))
+            val intent = Intent(this@LoginActivity, UserProfileActivity::class.java)
+            intent.putExtra(Constants.EXTRA_USER_DETAILS, user)
+            startActivity(intent)
         } else {
             startActivity(Intent(this@LoginActivity, MainActivity::class.java))
         }
