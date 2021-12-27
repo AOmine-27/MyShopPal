@@ -7,6 +7,7 @@ import android.media.session.MediaSessionManager
 import android.util.Log
 import com.example.myshoppal.activities.LoginActivity
 import com.example.myshoppal.activities.RegisterActivity
+import com.example.myshoppal.activities.UserProfileActivity
 import com.example.myshoppal.models.User
 import com.example.myshoppal.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
@@ -85,4 +86,24 @@ class FirestoreClass {
                 )
             }
     }
+
+    fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>){
+        mFireStore.collection(Constants.USERS).document(getCurrentUserId()).update(userHashMap)
+            .addOnSuccessListener {
+                when (activity) {
+                    is UserProfileActivity -> {
+                        activity.userProfileUpdateSuccess()
+                    }
+                }
+
+        }.addOnFailureListener{ e ->
+            when (activity) {
+                is UserProfileActivity -> {
+                    activity.hideProgressDialog()
+                }
+            }
+            Log.e(activity.javaClass.simpleName, "Error while updating the user details",e)
+        }
+    }
+
 }

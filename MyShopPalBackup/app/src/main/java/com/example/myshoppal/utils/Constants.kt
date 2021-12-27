@@ -12,6 +12,12 @@ object Constants {
     const val READ_EXTERNAL_STORAGE_PERMISSION_CODE = 2
     const val PICK_IMAGE_REQUEST_CODE = 5
 
+    const val MALE: String = "male"
+    const val FEMALE: String = "female"
+
+    const val MOBILE: String = "mobile"
+    const val  GENDER: String = "gender"
+
     fun showImageChooser(activity: Activity){
         //An intent for launching the image selection from phone storage
         val galleryIntent = Intent(

@@ -8,39 +8,47 @@ import android.media.Image
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings.Global.getString
+import android.provider.Settings.System.getString
+import android.text.TextUtils
+import android.util.Log
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.myshoppal.R
+import com.example.myshoppal.firestore.FirestoreClass
 import com.example.myshoppal.models.User
 import com.example.myshoppal.utils.Constants
+import com.example.myshoppal.utils.GlideLoader
 import java.io.IOException
 import java.util.jar.Manifest
 
 class UserProfileActivity : BaseActivity(), View.OnClickListener {
+
+    private lateinit var mUserDetails: User
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
 
-        var userDetails: User = User()
 
         if (intent.hasExtra(Constants.EXTRA_USER_DETAILS)) {
-            userDetails = intent.getParcelableExtra(Constants.EXTRA_USER_DETAILS)!!
+            mUserDetails = intent.getParcelableExtra(Constants.EXTRA_USER_DETAILS)!!
         }
 
         findViewById<EditText>(R.id.et_first_name).isEnabled = false
-        findViewById<EditText>(R.id.et_first_name).setText(userDetails.firstName)
+        findViewById<EditText>(R.id.et_first_name).setText(mUserDetails.firstName)
 
         findViewById<EditText>(R.id.et_last_name).isEnabled = false
-        findViewById<EditText>(R.id.et_last_name).setText(userDetails.lastName)
+        findViewById<EditText>(R.id.et_last_name).setText(mUserDetails.lastName)
 
         findViewById<EditText>(R.id.et_email).isEnabled = false
-        findViewById<EditText>(R.id.et_email).setText(userDetails.email)
+        findViewById<EditText>(R.id.et_email).setText(mUserDetails.email)
 
         findViewById<ImageView>(R.id.iv_user_photo).setOnClickListener(this@UserProfileActivity)
+
+        findViewById<Button>(R.id.btn_submit).setOnClickListener(this@UserProfileActivity)
 
     }
 
@@ -64,8 +72,40 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
                         )
                     }
                 }
+
+                R.id.btn_submit -> {
+                    if (validateUserProfileDetails()){
+                        val userHashMap = HashMap<String, Any>()
+
+                        val mobileNumber = findViewById<EditText>(R.id.et_mobile_number).text.toString().trim {it <= ' '}
+                        val gender = if (findViewById<RadioButton>(R.id.rb_male).isChecked){
+                            Constants.MALE
+                        } else {
+                            Constants.FEMALE
+                        }
+
+                        if (mobileNumber.isNotEmpty()) {
+                            userHashMap[Constants.MOBILE] = mobileNumber.toLong()
+                        }
+                        userHashMap[Constants.GENDER] = gender
+
+                        showProgressDialog(resources.getString(R.string.please_wait))
+                        FirestoreClass().updateUserProfileData(this,userHashMap)
+
+                    }
+                }
             }
         }
+    }
+
+    fun userProfileUpdateSuccess() {
+        hideProgressDialog()
+
+
+        Toast.makeText(this, R.string.msg_profile_update_success, Toast.LENGTH_SHORT).show()
+
+        startActivity(Intent(this@UserProfileActivity, MainActivity::class.java))
+        finish()
     }
 
     override fun onRequestPermissionsResult(
@@ -96,7 +136,8 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
                         // the uri of selected image from phone storage
                         val selectedImageFileUri = data.data!!
 
-                        findViewById<ImageView>(R.id.iv_user_photo).setImageURI(Uri.parse(selectedImageFileUri.toString()))
+                        GlideLoader(this).loadUserPicture(selectedImageFileUri,findViewById(R.id.iv_user_photo))
+//                        findViewById<ImageView>(R.id.iv_user_photo).setImageURI(Uri.parse(selectedImageFileUri.toString()))
                     } catch (e: IOException){
                         e.printStackTrace()
                         Toast.makeText(
@@ -107,6 +148,21 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
                     }
 
                 }
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            //A log is printed when user close or cancel the image selection
+            Log.e("Request canceled", "Image selection cancelled")
+        }
+    }
+
+    private fun validateUserProfileDetails(): Boolean {
+        return when {
+            TextUtils.isEmpty(findViewById<EditText>(R.id.et_mobile_number).text.toString().trim {it <= ' '}) -> {
+                showErrorSnackBar(resources.getString(R.string.err_msg_enter_mobile_number), true)
+                false
+            }
+            else -> {
+                true
             }
         }
     }

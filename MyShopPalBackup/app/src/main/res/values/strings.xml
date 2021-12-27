@@ -46,4 +46,8 @@
 
     <string name="read_storage_permission_denied">The permission for storage access was denied. You can configure in your options menu</string>
     <string name="image_selection_failed">Image selection failed</string>
+
+    <string name="err_msg_enter_mobile_number">Please enter mobile number</string>
+
+    <string name="msg_profile_update_success">You details were updated successfully</string>
 </resources>
