@@ -27,6 +27,8 @@ import java.util.jar.Manifest
 class UserProfileActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var mUserDetails: User
+    private var mSelectedImageFileUri: Uri? = null
+    private var mUserProfileImageURL: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,27 +77,43 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
 
                 R.id.btn_submit -> {
                     if (validateUserProfileDetails()){
-                        val userHashMap = HashMap<String, Any>()
-
-                        val mobileNumber = findViewById<EditText>(R.id.et_mobile_number).text.toString().trim {it <= ' '}
-                        val gender = if (findViewById<RadioButton>(R.id.rb_male).isChecked){
-                            Constants.MALE
-                        } else {
-                            Constants.FEMALE
-                        }
-
-                        if (mobileNumber.isNotEmpty()) {
-                            userHashMap[Constants.MOBILE] = mobileNumber.toLong()
-                        }
-                        userHashMap[Constants.GENDER] = gender
-
                         showProgressDialog(resources.getString(R.string.please_wait))
-                        FirestoreClass().updateUserProfileData(this,userHashMap)
 
+                        if (mSelectedImageFileUri != null){
+                            FirestoreClass().uploadImageToCloudStorage(this, mSelectedImageFileUri)
+                        } else {
+                            updateUSerProfileDetails()
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun updateUSerProfileDetails(){
+        val userHashMap = HashMap<String, Any>()
+
+        val mobileNumber = findViewById<EditText>(R.id.et_mobile_number).text.toString().trim {it <= ' '}
+
+        val gender = if (findViewById<RadioButton>(R.id.rb_male).isChecked){
+            Constants.MALE
+        } else {
+            Constants.FEMALE
+        }
+
+        userHashMap[Constants.GENDER] = gender
+
+        if (mUserProfileImageURL.isNotEmpty()){
+            userHashMap[Constants.IMAGE] = mUserProfileImageURL
+        }
+
+        if (mobileNumber.isNotEmpty()) {
+            userHashMap[Constants.MOBILE] = mobileNumber.toLong()
+        }
+
+        userHashMap[Constants.COMPLETE_PROFILE] = 1
+
+        FirestoreClass().updateUserProfileData(this,userHashMap)
     }
 
     fun userProfileUpdateSuccess() {
@@ -131,13 +149,15 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == Constants.PICK_IMAGE_REQUEST_CODE){
+                Log.e("Stop0","qwe")
                 if (data != null){
                     try {
+                        Log.e("Stop01","qwe")
                         // the uri of selected image from phone storage
-                        val selectedImageFileUri = data.data!!
+                        mSelectedImageFileUri = data.data!!
 
-                        GlideLoader(this).loadUserPicture(selectedImageFileUri,findViewById(R.id.iv_user_photo))
-//                        findViewById<ImageView>(R.id.iv_user_photo).setImageURI(Uri.parse(selectedImageFileUri.toString()))
+                        GlideLoader(this).loadUserPicture(mSelectedImageFileUri!!,findViewById(R.id.iv_user_photo))
+//                        findViewById<ImageView>(R.id.iv_user_photo).setImageURI(Uri.parse(mSelectedImageFileUri.toString()))
                     } catch (e: IOException){
                         e.printStackTrace()
                         Toast.makeText(
@@ -165,5 +185,12 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
                 true
             }
         }
+    }
+
+    fun imageUploadSuccess(imageUrl: String) {
+
+        mUserProfileImageURL = imageUrl
+
+        updateUSerProfileDetails()
     }
 }
