@@ -29,9 +29,9 @@ class SplashActivity : AppCompatActivity() {
             {
                 //Launch Main Activity
                 print("a")
-                startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+                startActivity(Intent(this@SplashActivity, DashboardActivity::class.java))
                 finish() //Call this when your activity is done and should be closed
-            }, 2500
+            }, 1500
 
         )
 
