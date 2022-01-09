@@ -18,6 +18,8 @@
         <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/drawable/app_gradient_color_background.xml" value="0.3776041666666667" />
         <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/drawable/drawable_gender_tab_selector.xml" value="0.3776041666666667" />
         <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/drawable/drawable_gender_tab_text_color_selector.xml" value="0.3717948717948718" />
+        <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/drawable/ic_vector_dashboard.xml" value="0.2558974358974359" />
+        <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/drawable/ic_vector_orders.xml" value="0.2558974358974359" />
         <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/drawable/user_image_background.xml" value="0.3776041666666667" />
         <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/layout/activity_dashboard.xml" value="0.20153985507246377" />
         <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/layout/activity_forgot_password.xml" value="0.2546875" />
@@ -26,6 +28,8 @@
         <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/layout/activity_register.xml" value="0.2546875" />
         <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/layout/activity_splash.xml" value="0.2546875" />
         <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/layout/activity_user_profile.xml" value="0.25" />
+        <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/layout/fragment_home.xml" value="0.20153985507246377" />
+        <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/menu/bottom_nav_menu.xml" value="0.24375" />
         <entry key="..\:/Users/aomin/AndroidStudioProjects/MyShopPalBackup/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2708333333333333" />
       </map>
     </option>
