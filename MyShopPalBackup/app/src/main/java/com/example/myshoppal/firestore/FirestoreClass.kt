@@ -8,6 +8,7 @@ import android.net.Uri
 import android.util.Log
 import com.example.myshoppal.activities.LoginActivity
 import com.example.myshoppal.activities.RegisterActivity
+import com.example.myshoppal.activities.SettingsActivity
 import com.example.myshoppal.activities.UserProfileActivity
 import com.example.myshoppal.models.User
 import com.example.myshoppal.utils.Constants
@@ -79,9 +80,21 @@ class FirestoreClass {
                     is LoginActivity -> {
                         activity.userLoggedInSuccess(user)
                     }
+                    is SettingsActivity -> {
+                        activity.userDetailsSuccess(user)
+                    }
                 }
             }
             .addOnFailureListener{ e ->
+                when (activity) {
+                    is LoginActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is SettingsActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
+
                 Log.e(
                     activity.javaClass.simpleName,
                     "Error while logging in the user",

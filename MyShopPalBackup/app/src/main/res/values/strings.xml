@@ -51,10 +51,16 @@
 
     <string name="msg_profile_update_success">You details were updated successfully</string>
 
-<!--    <string name="title_activity_dashboard">DashboardActivity</string>-->
+    <!--    <string name="title_activity_dashboard">DashboardActivity</string>-->
     <string name="title_orders">Orders</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_products">Products</string>
 
     <string name="please_click_back_again_to_exit">Please click back again to exit</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_settings">Setting</string>
+    <string name="lbl_edit">Edit</string>
+    <string name="lbl_addresses">Addresses</string>
+    <string name="btn_lbl_logout">Logout</string>
 </resources>
