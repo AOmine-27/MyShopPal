@@ -14,6 +14,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.myshoppal.R
@@ -34,25 +35,68 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
 
-
         if (intent.hasExtra(Constants.EXTRA_USER_DETAILS)) {
             mUserDetails = intent.getParcelableExtra(Constants.EXTRA_USER_DETAILS)!!
         }
 
-        findViewById<EditText>(R.id.et_first_name).isEnabled = false
-        findViewById<EditText>(R.id.et_first_name).setText(mUserDetails.firstName)
+        if (mUserDetails.profileCompleted == 0){
+            findViewById<TextView>(R.id.tv_title).text = resources.getString(R.string.title_complete_profile)
+            findViewById<EditText>(R.id.et_first_name).isEnabled = false
+            findViewById<EditText>(R.id.et_first_name).setText(mUserDetails.firstName)
 
-        findViewById<EditText>(R.id.et_last_name).isEnabled = false
-        findViewById<EditText>(R.id.et_last_name).setText(mUserDetails.lastName)
+            findViewById<EditText>(R.id.et_last_name).isEnabled = false
+            findViewById<EditText>(R.id.et_last_name).setText(mUserDetails.lastName)
 
-        findViewById<EditText>(R.id.et_email).isEnabled = false
-        findViewById<EditText>(R.id.et_email).setText(mUserDetails.email)
+            findViewById<EditText>(R.id.et_email).isEnabled = false
+            findViewById<EditText>(R.id.et_email).setText(mUserDetails.email)
+        } else {
+            setupActionBar()
+            findViewById<EditText>(R.id.et_first_name).setText(mUserDetails.firstName)
+            findViewById<EditText>(R.id.et_last_name).setText(mUserDetails.lastName)
+            findViewById<EditText>(R.id.et_email).setText(mUserDetails.email)
+
+            findViewById<TextView>(R.id.tv_title).text = resources.getString(R.string.title_edit_profile)
+            GlideLoader(this@UserProfileActivity).loadUserPicture(mUserDetails.image, findViewById(R.id.iv_user_photo))
+
+            findViewById<EditText>(R.id.et_email).isEnabled = false
+
+            if (mUserDetails.mobile != 0L){
+                findViewById<EditText>(R.id.et_mobile_number).setText(mUserDetails.mobile.toString())
+            }
+
+            if (mUserDetails.gender == Constants.MALE){
+                findViewById<RadioButton>(R.id.rb_male).isChecked = true
+            } else {
+                findViewById<RadioButton>(R.id.rb_female).isChecked = true
+            }
+
+
+
+        }
 
         findViewById<ImageView>(R.id.iv_user_photo).setOnClickListener(this@UserProfileActivity)
 
         findViewById<Button>(R.id.btn_submit).setOnClickListener(this@UserProfileActivity)
 
+
+
     }
+
+    private fun setupActionBar(){
+
+        val toolbar_user_profile_activity = findViewById<Toolbar>(R.id.toolbar_user_profile_activity)
+        setSupportActionBar(toolbar_user_profile_activity)
+
+        val actionBar = supportActionBar
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24)
+            actionBar.setDisplayShowTitleEnabled(false)
+        }
+
+        toolbar_user_profile_activity?.setNavigationOnClickListener { onBackPressed() }
+    }
+
 
     override fun onClick(v: View?) {
         if (v != null){
@@ -93,6 +137,16 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
     private fun updateUSerProfileDetails(){
         val userHashMap = HashMap<String, Any>()
 
+        val firstName = findViewById<EditText>(R.id.et_first_name).text.toString().trim { it <= ' '}
+        if (firstName != mUserDetails.firstName){
+            userHashMap[Constants.FIRST_NAME] = firstName
+        }
+
+        val lastName = findViewById<EditText>(R.id.et_last_name).text.toString().trim { it <= ' '}
+        if (lastName != mUserDetails.lastName){
+            userHashMap[Constants.LAST_NAME] = lastName
+        }
+
         val mobileNumber = findViewById<EditText>(R.id.et_mobile_number).text.toString().trim {it <= ' '}
 
         val gender = if (findViewById<RadioButton>(R.id.rb_male).isChecked){
@@ -101,13 +155,17 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
             Constants.FEMALE
         }
 
+        if (gender.isNotEmpty() && gender != mUserDetails.gender){
+            userHashMap[Constants.GENDER] = gender
+        }
+
         userHashMap[Constants.GENDER] = gender
 
         if (mUserProfileImageURL.isNotEmpty()){
             userHashMap[Constants.IMAGE] = mUserProfileImageURL
         }
 
-        if (mobileNumber.isNotEmpty()) {
+        if (mobileNumber.isNotEmpty() && mobileNumber != mUserDetails.mobile.toString()) {
             userHashMap[Constants.MOBILE] = mobileNumber.toLong()
         }
 
@@ -122,7 +180,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
 
         Toast.makeText(this, R.string.msg_profile_update_success, Toast.LENGTH_SHORT).show()
 
-        startActivity(Intent(this@UserProfileActivity, MainActivity::class.java))
+        startActivity(Intent(this@UserProfileActivity, DashboardActivity::class.java))
         finish()
     }
 
